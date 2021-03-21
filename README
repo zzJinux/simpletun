@@ -53,3 +53,8 @@ add some debug information. Press ctrl-c on either side to exit (the other end
 will exit too).
 
 The program is very limited, so expect to be disappointed.
+
+-------
+
+Modified to be tested on Docker containers
+Use ncat for demo
