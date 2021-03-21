@@ -3,3 +3,6 @@
 
 01/09/2009 Changed the way packets are sent over TCP, now all kinds of frames/packets/protocols are supported.
 27/03/2010 Some clean up and reformatting.
+
+----
+Added primitive IPv4 header parsing

@@ -129,6 +129,23 @@ int read_n(int fd, char *buf, int n) {
   return n;  
 }
 
+void get_ipv4_addrs(void *ip_packet, char *src_addr, char *dest_addr) {
+  uint32_t *ip_packet_u32 = ip_packet;
+
+  strcpy(src_addr, inet_ntoa(*(struct in_addr *)(ip_packet_u32 + 3)));
+  strcpy(dest_addr, inet_ntoa(*(struct in_addr *)(ip_packet_u32 + 4)));
+}
+
+char const *msg_ipv4_addrs(void *ip_packet) {
+  static char buf_static[100];
+  char src_text[16];
+  char dest_text[16];
+  get_ipv4_addrs(ip_packet, src_text, dest_text);
+
+  sprintf(buf_static, "SRC_IP=%s, DEST_IP=%s", src_text, dest_text);
+  return buf_static;
+}
+
 /**************************************************************************
  * do_debug: prints debugging stuff (doh!)                                *
  **************************************************************************/
@@ -336,6 +353,9 @@ int main(int argc, char *argv[]) {
 
       tap2net++;
       do_debug("TAP2NET %lu: Read %d bytes from the tap interface\n", tap2net, nread);
+      if(flags & IFF_TUN) {
+        do_debug("TAP2NET %lu: [Inspect] %s\n", tap2net, msg_ipv4_addrs(buffer));
+      }
 
       /* write length + packet */
       plength = htons(nread);
@@ -361,6 +381,9 @@ int main(int argc, char *argv[]) {
       /* read packet */
       nread = read_n(net_fd, buffer, ntohs(plength));
       do_debug("NET2TAP %lu: Read %d bytes from the network\n", net2tap, nread);
+      if(flags & IFF_TUN) {
+        do_debug("NET2TAP %lu: [Inspect] %s\n", net2tap, msg_ipv4_addrs(buffer));
+      }
 
       /* now buffer[] contains a full packet or frame, write it into the tun/tap interface */ 
       nwrite = cwrite(tap_fd, buffer, nread);
