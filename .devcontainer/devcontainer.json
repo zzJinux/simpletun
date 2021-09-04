@@ -11,7 +11,7 @@
 	"runArgs": [
 		"--cap-add=SYS_PTRACE", "--cap-add=NET_ADMIN", "--security-opt", "seccomp=unconfined",
 	],
-	"containerEnv": { "TUN_ADDRESS": "10.0.0.2/24" },
+	"containerEnv": { "TUN_ADDRESS": "10.0.0.1/24" },
 
 	"mounts": [
 		"source=vscode-extensions,target=/home/vscode/.vscode-server/extensions,type=volume"
